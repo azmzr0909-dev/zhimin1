@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Emotion Island - Kids' Emotional Learning Adventure | 6 Emotions + Calming Music</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(145deg, #3b9e8a 0%, #1f6e5c 100%);
+            font-family: 'Comic Neue', 'Comic Sans MS', 'Chalkboard SE', 'Segoe UI Emoji', cursive, sans-serif;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .game-container {
+            max-width: 1300px;
+            width: 100%;
+            background: #FFF9EF;
+            border-radius: 70px;
+            box-shadow: 0 30px 35px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .top-bar {
+            background: #FFB347;
+            padding: 12px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            border-bottom: 6px solid #F28500;
+        }
+
+        .nav-icon {
+            background: #2C6E5C;
+            border: none;
+            font-size: 1.1rem;
+            font-weight: bold;
+            padding: 8px 20px;
+            border-radius: 40px;
+            color: white;
+            cursor: pointer;
+            font-family: inherit;
+            transition: 0.1s linear;
+            box-shadow: 0 4px 0 #1D4A3E;
+        }
+        .nav-icon:active { transform: translateY(2px); box-shadow: 0 2px 0 #1D4A3E;}
+
+        .progress-area {
+            background: #FCE6B4;
+            border-radius: 50px;
+            padding: 6px 20px;
+            font-weight: bold;
+            color: #C13B1B;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .music-control {
+            background: #2C6E5C;
+            border: none;
+            font-size: 1.2rem;
+            padding: 8px 16px;
+            border-radius: 40px;
+            color: white;
+            cursor: pointer;
+            font-family: inherit;
+            transition: 0.1s;
+            box-shadow: 0 4px 0 #1D4A3E;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .music-control:active { transform: translateY(2px); box-shadow: 0 2px 0 #1D4A3E;}
+
+        .screen {
+            display: none;
+            padding: 25px 30px 35px;
+            animation: floatIn 0.5s ease-out;
+        }
+        .screen.active { display: block; }
+
+        @keyframes floatIn {
+            0% { opacity: 0; transform: translateY(30px);}
+            100% { opacity: 1; transform: translateY(0);}
+        }
+
+        .island-world {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+            margin: 35px 0;
+        }
+        .island-card {
+            width: 170px;
+            background: radial-gradient(circle at 30% 20%, #FFE4B5, #FFD699);
+            border-radius: 100px 100px 70px 70px;
+            padding: 20px 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 12px 0 #B97F44;
+            border: 2px solid #FFC857;
+            position: relative;
+        }
+        .island-card:hover { transform: translateY(-8px); background: #FFE2A4; box-shadow: 0 16px 0 #B97F44;}
+        .island-emoji { font-size: 4rem; display: inline-block; filter: drop-shadow(2px 6px 0 rgba(0,0,0,0.2)); animation: gentleBob 2s infinite ease; }
+        @keyframes gentleBob {
+            0% { transform: translateY(0px);}
+            50% { transform: translateY(-7px);}
+            100% { transform: translateY(0px);}
+        }
+        .badge-visit {
+            background: #4CAF50;
+            color: white;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            padding: 3px 10px;
+            position: absolute;
+            top: -10px;
+            right: -10px;
+        }
+
+        .emotion-banner {
+            background: linear-gradient(120deg, #FFF0CF, #FFE2B5);
+            border-radius: 60px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .character-animation { font-size: 6rem; transition: all 0.3s cubic-bezier(0.34, 1.2, 0.8, 1); display: inline-block; }
+        .coping-box { background: #E5F5F0; border-radius: 55px; padding: 18px; margin: 20px 0; border-left: 15px solid #F4A261; }
+        .btn-fun {
+            background: #FFB347;
+            border: none;
+            font-size: 1.2rem;
+            padding: 12px 22px;
+            border-radius: 50px;
+            font-weight: bold;
+            color: #2D3E40;
+            margin: 8px;
+            cursor: pointer;
+            transition: 0.05s linear;
+            box-shadow: 0 5px 0 #C5711E;
+        }
+        .btn-fun:active { transform: translateY(3px); box-shadow: 0 2px 0 #C5711E;}
+
+        .quiz-card { background: #FFF2DF; border-radius: 70px; padding: 20px; box-shadow: inset 0 0 0 3px white, 0 10px 20px rgba(0,0,0,0.1); }
+        .feedback-message { background: #D9E8E3; border-radius: 50px; padding: 15px; margin-top: 20px; font-size: 1.2rem; text-align: center; }
+
+        .media-showcase { background: #2C3E50; border-radius: 55px; padding: 15px; margin: 15px 0; color: white; }
+        .youtube-wrapper {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            border-radius: 40px;
+            margin: 15px 0;
+        }
+        .youtube-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 40px;
+            border: 3px solid #FFB347;
+        }
+        
+        .reward-party { text-align: center; background: radial-gradient(circle, #FFE48F, #FFC27A); border-radius: 75px; padding: 35px; }
+        footer { background: #FFD966; text-align: center; padding: 12px; font-size: 0.8rem; font-weight: bold; }
+
+        @media (max-width: 750px) { .island-card { width: 130px; } .screen { padding: 20px; } }
+    </style>
+</head>
+<body>
+<div class="game-container" id="app">
+    <div class="top-bar">
+        <button class="nav-icon" id="homeMainBtn">🏠 Home Island</button>
+        <div class="progress-area">⭐ <span id="progressText">Explorer: 0/6</span> 🗺️</div>
+        <div style="display: flex; gap: 10px;">
+            <button class="music-control" id="musicToggleBtn">🎵 Stop Music</button>
+            <button class="nav-icon" id="openMapBtn">🗺️ World Map</button>
+        </div>
+    </div>
+
+    <!-- Background Calming Music -->
+    <audio id="bgCalmMusic" loop preload="auto">
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Main Menu Screen -->
+    <div id="mainMenuScreen" class="screen active">
+        <div style="text-align:center; margin-bottom: 15px;">
+            <h1 style="font-size: 2.8rem; color:#E76F51; text-shadow: 4px 4px 0 #FFD966;">🌈 Emotion Island Adventure 🌈</h1>
+            <p style="font-size:1.3rem">🌊 Click any island to start learning! 🌊</p>
+        </div>
+        <div class="island-world" id="islandGridContainer"></div>
+
+        <!-- YouTube Videos Section -->
+        <div class="media-showcase">
+            <div style="margin-bottom: 10px; font-size:1.2rem;">🎬 <strong>Meet 6 Basic Emotions (Happy / Sad / Fear / Anger / Disgust / Surprise)</strong> 🎵</div>
+            <!-- First YouTube Video -->
+            <div class="youtube-wrapper">
+                <iframe 
+                    src="https://www.youtube.com/embed/jetoWelJJJk?si=b46vS0c1CGWxUIDw" 
+                    title="YouTube video player - Learn 6 Basic Emotions"
+                    frameborder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                    referrerpolicy="strict-origin-when-cross-origin" 
+                    allowfullscreen>
+                </iframe>
+            </div>
+            <p>🎤 <strong>Narrator:</strong> "Hi! I'm Leo the explorer. Our emotions are Happy, Sad, Fear, Anger, Disgust, and Surprise. Every emotion is important! Let's learn how to be friends with them!"</p>
+            
+            <!-- Second YouTube Video: Emotion Regulation -->
+            <div style="margin: 15px 0 10px 0; font-size:1.2rem;">🧘 <strong>Emotion Regulation Tips for Kids</strong> 🧘</div>
+            <div class="youtube-wrapper">
+                <iframe 
+                    src="https://www.youtube.com/embed/Vs-MyQgfH3A?si=4bsrxZn2WVMg1-kg" 
+                    title="YouTube video player - Emotion Regulation Techniques"
+                    frameborder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                    referrerpolicy="strict-origin-when-cross-origin" 
+                    allowfullscreen>
+                </iframe>
+            </div>
+            <p>🎤 <strong>Teaching Narration:</strong> "When we feel angry, scared, or sad, we can pause, take three deep breaths, and say how we feel. Like a beautiful flower slowly opening, our mind becomes calm."</p>
+            
+            <div id="calmTextMsg" style="background: #F4A261; border-radius: 40px; padding: 12px; margin-top: 12px; text-align: center;">
+                💡 Emotion Regulation Secret: <strong>Pause → Take 3 deep breaths → Express your feeling</strong>. You're brave!
+            </div>
+            <button id="playCalmTipBtn" class="btn-fun" style="background:#2C6E5C; color:white; margin-top: 8px;">🧸 Show Calming Tips</button>
+        </div>
+
+        <button class="btn-fun" id="quickQuizFromMenuBtn" style="background:#E76F51; color:white;">🌟 Emotion Challenge Quiz 🌟</button>
+    </div>
+
+    <!-- Learning Screen -->
+    <div id="learnScreen" class="screen">
+        <button class="nav-icon" id="backFromLearnBtn" style="background:#C44536;">⬅ Back to Islands</button>
+        <div id="learnDynamicArea">
+            <div class="emotion-banner">
+                <div class="character-animation" id="learnEmoji">😊</div>
+                <h2 id="learnTitle">Happiness Island</h2>
+            </div>
+            <div class="coping-box" id="learnDescription">
+                <p>🌈 What is happiness? It makes you feel warm, smile, and full of energy.</p>
+                <p><strong>🧸 Healthy coping:</strong> Share your joy, dance, or hug a family member!</p>
+            </div>
+            <div id="extraAnimationZone" style="text-align: center; margin:15px;"><div id="floatingStars">⭐ 🌟 ⭐</div></div>
+            <button class="btn-fun" id="learnQuizBtn">📚 Quiz about this emotion</button>
+            <button class="btn-fun" id="storyBtnInLearn">📖 Story + Coping Tip</button>
+        </div>
+    </div>
+
+    <!-- Quiz Screen -->
+    <div id="quizScreen" class="screen">
+        <button class="nav-icon" id="exitQuizBtn">🏡 Exit to Main</button>
+        <div class="quiz-card">
+            <h2>🧠 Emotion Challenge 🧠</h2>
+            <div id="quizQuestionText" class="feedback-message" style="font-size:1.6rem;"></div>
+            <div id="quizOptionsContainer" style="display: flex; flex-wrap:wrap; justify-content: center; gap:15px; margin:25px 0;"></div>
+            <div id="quizFeedbackMsg" class="feedback-message"></div>
+            <div id="quizCounterText" style="text-align:center; margin-top: 10px;">Question 1 / 6</div>
+        </div>
+    </div>
+
+    <!-- Reward Screen -->
+    <div id="rewardScreen" class="screen">
+        <div class="reward-party">
+            <div id="rewardAnimatedIcon" style="font-size: 5rem; animation: bounce 0.6s infinite;">🏆</div>
+            <h2 id="rewardTitleMsg">You're an Emotion Hero!</h2>
+            <p id="rewardExtraTip" style="margin:15px 0;">Amazing! You've learned to recognize and regulate emotions 💖</p>
+            <button class="btn-fun" id="rewardHomeBtn">🏝️ Continue Exploring</button>
+        </div>
+    </div>
+
+    <!-- Full Island Map (Non-linear Navigation) -->
+    <div id="mapScreen" class="screen">
+        <h2>🗺️ The 6 Emotion Islands 🗺️</h2>
+        <div class="island-world" id="fullMapContainer"></div>
+        <button class="nav-icon" id="closeMapBtn" style="background:#2C6E5C;">Close Map</button>
+        <p style="margin-top:15px; text-align:center;">✨ Click any island to jump there and learn ✨</p>
+    </div>
+</div>
+
+<script>
+    // ========== 6 Emotions Data (Happy, Sad, Fear, Anger, Disgust, Surprise) ==========
+    const emotionsData = [
+        { id: "happy", name: "Happy", emoji: "😊", description: "A firework inside your heart, smiling, full of energy!", coping: "Share something fun, dance, draw a colorful picture." },
+        { id: "sad", name: "Sad", emoji: "😢", description: "Feeling heavy, like you want to cry. Everyone feels sad sometimes.", coping: "Talk to someone, hug a stuffed animal, draw your feelings." },
+        { id: "fear", name: "Fear", emoji: "😨", description: "Heart beats fast, you want to hide. Fear is a protective signal.", coping: "Take deep breaths, find someone you trust, say 'I am brave'." },
+        { id: "anger", name: "Angry", emoji: "😤", description: "Like a volcano about to erupt, body feels hot. Anger is normal!", coping: "Count to ten, squeeze a pillow, walk away from the situation." },
+        { id: "disgust", name: "Disgust", emoji: "🤢", description: "Feeling 'yucky' and wanting to move away, like from a bad smell.", coping: "Politely say 'I don't like this', change your environment, drink water." },
+        { id: "surprise", name: "Surprise", emoji: "😲", description: "Eyes wide open, mouth drops open when something unexpected happens.", coping: "Take a breath, then curiously explore the new thing." }
+    ];
+
+    const quizBank = [
+        { text: "You dropped your ice cream on the ground. How might you feel?", options: ["Happy", "Sad", "Surprise"], correct: 1, explanation: "Sadness is normal. You can hug someone or draw about it." },
+        { text: "You hear a sudden strange noise in the dark. What emotion might you feel?", options: ["Disgust", "Fear", "Anger"], correct: 1, explanation: "Fear protects us. Turn on the light and take a deep breath." },
+        { text: "Your best friend won't play with you, and you feel heavy inside. This is...", options: ["Sad", "Happy", "Surprise"], correct: 0, explanation: "Sadness needs to be heard. Talking about it helps." },
+        { text: "Someone took your toy without asking, and you feel hot and frustrated. This is...", options: ["Fear", "Anger", "Disgust"], correct: 1, explanation: "Anger tells us something is unfair. Tell a teacher or parent." },
+        { text: "You see moldy food and wrinkle your nose. This feeling is...", options: ["Surprise", "Happy", "Disgust"], correct: 2, explanation: "Disgust helps us avoid things that might be bad for us." },
+        { text: "You suddenly receive a birthday gift and shout 'Wow!' This is...", options: ["Surprise", "Fear", "Sad"], correct: 0, explanation: "Surprise makes life full of fun and wonder!" }
+    ];
+
+    let visitedEmotions = new Set();
+    let currentQuizIndex = 0, currentScore = 0, currentEmotionContext = null;
+    let musicPlaying = true;
+    const bgMusic = document.getElementById("bgCalmMusic");
+
+    // Music Control
+    function initMusic() {
+        if(bgMusic) {
+            bgMusic.volume = 0.3;
+            bgMusic.loop = true;
+            const playPromise = bgMusic.play();
+            if(playPromise !== undefined) {
+                playPromise.catch(() => {
+                    console.log("Autoplay blocked by browser. Music will start after user interaction.");
+                    musicPlaying = false;
+                    document.getElementById("musicToggleBtn").innerHTML = "🎵 Play Music";
+                });
+            }
+        }
+    }
+
+    function toggleMusic() {
+        const btn = document.getElementById("musicToggleBtn");
+        if(!bgMusic) return;
+        if(musicPlaying) {
+            bgMusic.pause();
+            musicPlaying = false;
+            btn.innerHTML = "🎵 Play Music";
+        } else {
+            bgMusic.play().catch(e => console.log("Play failed"));
+            musicPlaying = true;
+            btn.innerHTML = "🎵 Stop Music";
+        }
+    }
+
+    function enableMusicOnFirstInteraction() {
+        if(!musicPlaying && bgMusic && bgMusic.paused) {
+            bgMusic.play().then(() => {
+                musicPlaying = true;
+                document.getElementById("musicToggleBtn").innerHTML = "🎵 Stop Music";
+            }).catch(() => {});
+        }
+    }
+
+    function updateProgressUI() { 
+        document.getElementById("progressText").innerText = `Explorer: ${visitedEmotions.size}/6`; 
+    }
+
+    function renderMainIslands() {
+        const container = document.getElementById("islandGridContainer");
+        container.innerHTML = "";
+        emotionsData.forEach(emo => {
+            const visited = visitedEmotions.has(emo.id);
+            const islandDiv = document.createElement("div");
+            islandDiv.className = "island-card";
+            islandDiv.style.background = visited ? "#FFF0C0" : "#FFE0B5";
+            islandDiv.innerHTML = `
+                <div class="island-emoji">${emo.emoji}</div>
+                <strong>${emo.name}</strong>
+                ${visited ? '<div class="badge-visit">✔️ Visited</div>' : '<div class="badge-visit" style="background:#C0A080;">🔍 New</div>'}
+            `;
+            islandDiv.addEventListener("click", () => {
+                enableMusicOnFirstInteraction();
+                openLearnScreen(emo.id);
+            });
+            container.appendChild(islandDiv);
+        });
+    }
+
+    function openLearnScreen(emotionId) {
+        const emotion = emotionsData.find(e => e.id === emotionId);
+        if (!emotion) return;
+        currentEmotionContext = emotion;
+        visitedEmotions.add(emotion.id);
+        updateProgressUI();
+        renderMainIslands();
+        document.getElementById("learnTitle").innerHTML = `${emotion.emoji} ${emotion.name} Island ${emotion.emoji}`;
+        document.getElementById("learnDescription").innerHTML = `<p>📖 ${emotion.description}</p><p>🌱 <strong>Healthy Coping:</strong> ${emotion.coping}</p>`;
+        const emojiDiv = document.getElementById("learnEmoji");
+        emojiDiv.innerHTML = emotion.emoji;
+        emojiDiv.style.animation = "none";
+        setTimeout(() => { emojiDiv.style.animation = "gentleBob 0.6s ease"; }, 10);
+        document.getElementById("floatingStars").innerHTML = "✨🌟✨🌟✨";
+        setActiveScreen("learnScreen");
+    }
+
+    function setActiveScreen(screenId) {
+        const screens = ["mainMenuScreen", "learnScreen", "quizScreen", "rewardScreen", "mapScreen"];
+        screens.forEach(id => document.getElementById(id).classList.remove("active"));
+        document.getElementById(screenId).classList.add("active");
+    }
+
+    function startQuizFromMenu() { 
+        enableMusicOnFirstInteraction();
+        currentQuizIndex = 0; 
+        currentScore = 0; 
+        currentEmotionContext = null; 
+        loadQuizQuestion(); 
+        setActiveScreen("quizScreen"); 
+    }
+    function startQuizFromLearn() { 
+        enableMusicOnFirstInteraction();
+        currentQuizIndex = 0; 
+        currentScore = 0; 
+        loadQuizQuestion(); 
+        setActiveScreen("quizScreen"); 
+    }
+    
+    function loadQuizQuestion() {
+        if (currentQuizIndex >= quizBank.length) { finishQuiz(); return; }
+        const q = quizBank[currentQuizIndex];
+        document.getElementById("quizQuestionText").innerHTML = `❓ ${q.text}`;
+        document.getElementById("quizCounterText").innerHTML = `Question ${currentQuizIndex+1} / ${quizBank.length}`;
+        const optsDiv = document.getElementById("quizOptionsContainer");
+        optsDiv.innerHTML = "";
+        q.options.forEach((opt, idx) => {
+            const btn = document.createElement("button");
+            btn.className = "btn-fun";
+            btn.innerText = opt;
+            btn.addEventListener("click", () => handleAnswer(idx, q.correct, q.explanation));
+            optsDiv.appendChild(btn);
+        });
+        document.getElementById("quizFeedbackMsg").innerHTML = "💡 Choose your answer! 💡";
+    }
+
+    function handleAnswer(selected, correctIdx, explanation) {
+        const isCorrect = (selected === correctIdx);
+        const feedbackDiv = document.getElementById("quizFeedbackMsg");
+        if (isCorrect) { currentScore++; feedbackDiv.innerHTML = `✅ Correct! ✅ <br> ${explanation} 🎉`; } 
+        else { const correctAns = quizBank[currentQuizIndex].options[correctIdx]; feedbackDiv.innerHTML = `🌱 That's okay! ${explanation}<br>✨ Correct answer: ${correctAns}. Keep learning! ✨`; }
+        setTimeout(() => { currentQuizIndex++; loadQuizQuestion(); }, 1500);
+    }
+
+    function finishQuiz() {
+        let message = (currentScore === quizBank.length) ? "🎉 Perfect Score! Emotion Master! 🎉" : `🏅 Score: ${currentScore}/${quizBank.length} — You're getting better! 🏅`;
+        document.getElementById("rewardTitleMsg").innerHTML = message;
+        document.getElementById("rewardExtraTip").innerHTML = "Remember: Every emotion can be handled with kindness. Breathe, speak up — you're an emotion hero!";
+        document.getElementById("rewardAnimatedIcon").innerHTML = "🏆🌟🎉";
+        setActiveScreen("rewardScreen");
+    }
+
+    function showStoryCoping() {
+        enableMusicOnFirstInteraction();
+        if (currentEmotionContext) {
+            const storyMsg = document.createElement("div");
+            storyMsg.className = "feedback-message";
+            storyMsg.innerHTML = `📖✨ <strong>Little Story:</strong> Today the ${currentEmotionContext.name} spirit visited you. ${currentEmotionContext.coping} Remember, no emotion is bad — you can always learn to regulate it. ✨`;
+            document.getElementById("learnDescription").appendChild(storyMsg);
+            setTimeout(() => storyMsg.remove(), 5000);
+        } else { alert("Please click an emotion island first~"); }
+    }
+
+    function renderFullMap() {
+        const mapContainer = document.getElementById("fullMapContainer");
+        mapContainer.innerHTML = "";
+        emotionsData.forEach(emo => {
+            const visited = visitedEmotions.has(emo.id);
+            const card = document.createElement("div");
+            card.className = "island-card";
+            card.style.width = "150px";
+            card.innerHTML = `<div class="island-emoji">${emo.emoji}</div><strong>${emo.name}</strong><br>${visited ? "✅ Explored" : "🔒 Discover"}`;
+            card.addEventListener("click", () => { openLearnScreen(emo.id); setActiveScreen("learnScreen"); });
+            mapContainer.appendChild(card);
+        });
+    }
+
+    function playCalmingGuide() {
+        enableMusicOnFirstInteraction();
+        const calmDiv = document.createElement("div");
+        calmDiv.className = "feedback-message";
+        calmDiv.style.background = "#FFD966";
+        calmDiv.style.color = "#2D3E40";
+        calmDiv.innerHTML = "🧸 【Emotion Regulation Magic】🧸<br>① Pause, place your hand on your chest ② Breathe in deeply for 3 seconds, breathe out slowly for 5 seconds (repeat 3 times) ③ Say how you feel: 'I feel...' You did it! 🌈";
+        document.querySelector(".media-showcase").appendChild(calmDiv);
+        setTimeout(() => calmDiv.remove(), 7000);
+        const box = document.getElementById("calmTextMsg");
+        box.style.transform = "scale(1.05)";
+        setTimeout(() => box.style.transform = "scale(1)", 500);
+    }
+
+    // Event bindings
+    document.getElementById("homeMainBtn").addEventListener("click", () => { enableMusicOnFirstInteraction(); setActiveScreen("mainMenuScreen"); });
+    document.getElementById("openMapBtn").addEventListener("click", () => { enableMusicOnFirstInteraction(); renderFullMap(); setActiveScreen("mapScreen"); });
+    document.getElementById("closeMapBtn").addEventListener("click", () => { enableMusicOnFirstInteraction(); setActiveScreen("mainMenuScreen"); });
+    document.getElementById("backFromLearnBtn").addEventListener("click", () => { enableMusicOnFirstInteraction(); setActiveScreen("mainMenuScreen"); });
+    document.getElementById("exitQuizBtn").addEventListener("click", () => { enableMusicOnFirstInteraction(); setActiveScreen("mainMenuScreen"); });
+    document.getElementById("learnQuizBtn").addEventListener("click", startQuizFromLearn);
+    document.getElementById("storyBtnInLearn").addEventListener("click", showStoryCoping);
+    document.getElementById("quickQuizFromMenuBtn").addEventListener("click", startQuizFromMenu);
+    document.getElementById("rewardHomeBtn").addEventListener("click", () => { enableMusicOnFirstInteraction(); setActiveScreen("mainMenuScreen"); });
+    document.getElementById("playCalmTipBtn").addEventListener("click", playCalmingGuide);
+    document.getElementById("musicToggleBtn").addEventListener("click", toggleMusic);
+
+    // Initialize
+    function init() {
+        renderMainIslands();
+        updateProgressUI();
+        initMusic();
+        document.body.addEventListener("click", enableMusicOnFirstInteraction, { once: true });
+    }
+    init();
+</script>
+</body>
+</html>
+```
